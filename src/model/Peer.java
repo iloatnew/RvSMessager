@@ -49,4 +49,9 @@ public class Peer {
 		return this.getName().equals(targetPeer.getName());
 	}
 
+	public void setName(String name) {
+		this.name = name;
+		
+	}
+
 }

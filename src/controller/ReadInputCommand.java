@@ -62,7 +62,7 @@ public class ReadInputCommand extends Thread{
 
 
 	/**
-	 * handler for M conmmands. 
+	 * handler for M commands. 
 	 * it calls {@link #createMMessage()} to create standard MESSAGE type message
 	 */
 	private void handleM() {
@@ -75,7 +75,7 @@ public class ReadInputCommand extends Thread{
 	}
 
 	/**
-	 * handler for MX conmmands. 
+	 * handler for MX commands. 
 	 * it calls {@link #createMXMessage()} to create standard MESSAGE type message
 	 */
 	private void handleMX() {
@@ -117,7 +117,7 @@ public class ReadInputCommand extends Thread{
 		return text;
 	}
 	
-	private void send(ArrayList<Peer> targetPeers, String something){
+	public void send(ArrayList<Peer> targetPeers, String something){
 		System.out.println("sending "+something);
 		for(Peer targetPeer : targetPeers) {
 			messager.getSender().sendMessage(targetPeer,something);

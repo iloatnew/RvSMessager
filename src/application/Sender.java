@@ -1,5 +1,7 @@
 package application;
 
+import java.util.ArrayList;
+
 import controller.*;
 import model.*;
 
@@ -11,8 +13,8 @@ public class Sender {
 	 * Sender deals all type of sending jobs, includes normal send,
 	 * disconnect, connect, poking and so on.
 	 */
-	public Sender() {
-		autoPoking = new AutoPoking();
+	public Sender(Messager messager) {
+		autoPoking = new AutoPoking(messager);
 		autoPoking.start();
 	}
  
@@ -34,6 +36,11 @@ public class Sender {
 		String myName = ipTest.getMyName();
 		int port = -1;
 		return new Peer(myName, myIp, port);
+	}
+
+	public void poke(ArrayList<Peer> peerList) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

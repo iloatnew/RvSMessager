@@ -15,13 +15,14 @@ public class Messager {
 	public Messager() {
 	}
 	
-	public void init() {
+	public void init(String name, int port) {
 		//init receiver
-		int port = (int) (1000+Math.random()*10000);
+		//int port = (int) (1000+Math.random()*10000);
 		receiving = new Receiving(port,this);
+		receiving.start();
 		
 		//init sender
-		sender = new Sender();
+		sender = new Sender(this);
 		
 		//init command handler
 		readInputCommand = new ReadInputCommand(this);
@@ -31,6 +32,7 @@ public class Messager {
 		peerList = new ArrayList<Peer>();
 		localPeer = sender.getLocalPeer();
 		localPeer.setPort(port);
+		localPeer.setName(name);
 		refreshPeerList(localPeer);
 		
 
@@ -67,6 +69,7 @@ public class Messager {
 		if(!existPeer) {
 			targetPeer.setPokeTime(System.currentTimeMillis()/1000L);
 			peerList.add(targetPeer);
+			sender.poke(peerList);
 		}
 		System.out.println("current peerlist: ");
 		for(Peer onePeer : peerList) {
@@ -76,6 +79,10 @@ public class Messager {
 	
 	public Peer getLocalPeer() {
 		return localPeer;
+	}
+	
+	public ReadInputCommand getControllCenter(){
+		return readInputCommand;
 	}
 
 	public ArrayList<Peer> searchPeers(Peer musterPeer) {
