@@ -1,17 +1,18 @@
 package controller;
 
-import java.util.ArrayList;
-
+import java.util.List;
 import application.Messager;
 import model.Peer;
 
 public class AutoPoking extends Thread{
 	
 	private boolean terminate;
-	private ArrayList<Peer> peerList;
+	private List<Peer> peerList;
 	private Messager messager;
+	private String poke;
 	
 	public AutoPoking(Messager messager){
+		poke = "";
 		this.messager = messager;
 		terminate = false;
 	}
@@ -23,34 +24,45 @@ public class AutoPoking extends Thread{
 	@Override
 	public void run(){
 		long curTime = System.currentTimeMillis() / 1000L;
-		boolean oneMin = true;
 		while(!terminate) {
 			if(System.currentTimeMillis() / 1000L == (curTime + 30L)) {
-				if(oneMin){
-					deleteInActive();
-				}
-				sendPokeToEveryone();
 				curTime = System.currentTimeMillis() / 1000L;
-				oneMin = !oneMin;
+				messager.deleteInactivPeers(curTime);
+				sendPokeToEveryone();
 			}
 		}
 	}
 
-	private void sendPokeToEveryone() {
-		messager.getControllCenter().send(peerList, myPoke);
+	/**
+	 * send poke {@link #getPoke()} to every peers in the {@link #messager.getPeerList()}
+	 */
+	public void sendPokeToEveryone() {
+		// need refresh list here, in order to get the newest list
+		peerList = messager.getPeerList();
+		if(poke.length()>0 && peerList.size()>0){
+			messager.getControllCenter().send(peerList, poke);
+		}
+		else{
+			if(peerList.size()>0){
+				System.out.println("poke failed: poke message was not created!");
+			}
+		}
 		
 	}
 
-	private void deleteInActive() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public ArrayList<Peer> getPeerList() {
+	public List<Peer> getPeerList() {
 		return peerList;
 	}
 
-	public void setPeerList(ArrayList<Peer> peerList) {
+	public void setPeerList(List<Peer> peerList) {
 		this.peerList = peerList;
+	}
+
+	public String getPoke() {
+		return poke;
+	}
+
+	public void setPoke(String poke) {
+		this.poke = poke;
 	}
 }

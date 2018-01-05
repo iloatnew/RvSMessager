@@ -1,6 +1,7 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import model.*;
 import application.*;
@@ -46,19 +47,32 @@ public class ReadInputCommand extends Thread{
 	 */
 	private void checkFormat(String format) {
 		switch (format) {
-		case "MX": 		handleMX();
-						break;
-		case "M":		handleM();
-						break;
-		case "CONNECT": handelConnect();
-						break;
-		case "end":		messager.close();
-						break;
-		default: 		System.out.println("unavailable");
-						break;
+		case "MX": 			handleMX();
+							break;
+		case "M":			handleM();
+							break;
+		case "CONNECT": 	handelConnect();
+							break;
+		case "DISCONNECT":	handelDisconnect(); 
+							break;
+		case "EXIT":		handelDisconnect();
+							messager.close();
+							break;
+		default: 			System.out.println("unavailable");
+							break;
 		}
 	}
 
+
+	/**
+	 * handler for DISCONNECT commands
+	 * it create and send "DISCONNECT" message to all peers in the peerlist
+	 */
+	private void handelDisconnect() {
+		messager.getSender().stopPoking();
+		String message = creatDCMessage();
+		send(messager.getPeerList(), message);
+	}
 
 
 	/**
@@ -97,6 +111,7 @@ public class ReadInputCommand extends Thread{
 		ArrayList<Peer> targetPeers = messager.searchPeers(musterPeer);
 		String message = creatPokeMessage();
 		send(targetPeers, message);
+		messager.getSender().startPoking();
 	}
 	
 	private String creatPokeMessage() {
@@ -116,12 +131,21 @@ public class ReadInputCommand extends Thread{
 		text = "MESSAGE " + messager.getLocalPeer().toString()+" "+text;
 		return text;
 	}
+
+	private String creatDCMessage() {
+		return "DISCONNECT " + messager.getLocalPeer().toString();
+	}
 	
-	public void send(ArrayList<Peer> targetPeers, String something){
-		System.out.println("sending "+something);
+	/**
+	 * the main send activity. all messages, include POKE, MESSAGE, DISCONNECT will be send use this method
+	 * @param targetPeers = the receiver
+	 * @param something = the message
+	 */
+	public void send(List<Peer> targetPeers, String something){
+		//System.out.println("sending "+something);
 		for(Peer targetPeer : targetPeers) {
 			messager.getSender().sendMessage(targetPeer,something);
-			System.out.println("to "+targetPeer.toString());
+			//System.out.println(" to "+targetPeer.toString());
 		}
 	}
 }

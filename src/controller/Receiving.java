@@ -30,6 +30,8 @@ public class Receiving extends Thread {
 	/**
 	 * read and split the header of messages,
 	 * then let {@link #checkMessageFormat(String)} recognize the type of messages
+	 * in addition, because a receiving thread runs always in the background, it can also take the job of removing inactive peers
+	 * this {@link #messager.deleteInactivPeers()} should be done every second
 	 */
 	@Override
 	public void run(){
@@ -41,6 +43,7 @@ public class Receiving extends Thread {
 		         receivedMessage = br.readLine();
 		         receivedMessages = receivedMessage.split("\\s+");
 		         checkMessageFormat(receivedMessages[0]);
+		         
 	         }
 	         serverSocket.close();
 	      } catch (IOException e) {
@@ -54,11 +57,29 @@ public class Receiving extends Thread {
 	 */
 	private void checkMessageFormat(String format) {
 		switch (format) {
-		case "MESSAGE": handelMessage();
-						break;
-		case "POKE":	handlePoke();
-		default: 		break;
+		case "MESSAGE": 	handelMessage();
+							break;
+		case "POKE":		handlePoke();
+							break;
+		case "DISCONNECT":	handleDisconnect();
+							break;
+		default: 			break;
 		}
+		
+	}
+
+	/**
+	 * handle the user messages with type DISCONNECT
+	 * when the peer in the list, remove the peer in the DISCONNECT message from the peer list
+	 * and send the same DISCONNECT message to all other peers in peer list
+	 */
+	private void handleDisconnect() {
+		String name = receivedMessages[1];
+		String ip = receivedMessages[2];
+		int port = Integer.parseInt(receivedMessages[3]);
+		
+		Peer toDelete = new Peer(name,ip,port);
+		messager.deletePeer(toDelete, receivedMessage);
 		
 	}
 

@@ -37,8 +37,8 @@ public class Sending extends Thread {
 		} catch (SocketTimeoutException timeoutException) {
 			System.out.println("time out!");
 		} catch (SocketException socketException) {
-			socketException.printStackTrace();
-		}catch (IOException e) {
+			System.out.println("connect " + ip + " "+port + " faild!");
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

@@ -1,7 +1,4 @@
 package application;
-
-import java.util.ArrayList;
-
 import controller.*;
 import model.*;
 
@@ -15,6 +12,7 @@ public class Sender {
 	 */
 	public Sender(Messager messager) {
 		autoPoking = new AutoPoking(messager);
+		autoPoking.setPeerList(messager.getPeerList());
 		autoPoking.start();
 	}
  
@@ -23,6 +21,10 @@ public class Sender {
 	 */
 	public void stopPoking() {
 		autoPoking.terminate();
+	}
+	
+	public void startPoking(){
+		autoPoking.start();
 	}
 	
 	public void sendMessage(Peer targetPeer, String text) {
@@ -38,8 +40,10 @@ public class Sender {
 		return new Peer(myName, myIp, port);
 	}
 
-	public void poke(ArrayList<Peer> peerList) {
-		// TODO Auto-generated method stub
+	public void poke(Peer targetPeer) {
+		String poke = "POKE " + targetPeer.toString();
+		autoPoking.setPoke(poke);
+		autoPoking.sendPokeToEveryone();
 		
 	}
 
