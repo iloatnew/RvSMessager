@@ -39,10 +39,10 @@ public class Messager {
 		localPeer.setName(name);
 		refreshPeerList(localPeer);
 		
-
-		System.out.println("localhost information: ");
-		System.out.println(localPeer.toString());
-		System.out.println("########################################################");
+		showTextWithFrame("");
+		showTextWithFrame("localhost information: ");
+		showTextWithFrame(localPeer.toString());
+		showTextWithFrame("");
 	}
 	
 	public Sender getSender() {
@@ -84,11 +84,12 @@ public class Messager {
 				peerList.add(targetPeer);
 				sender.poke(targetPeer);
 				sender.poke(getLocalPeer());
-				System.out.println("current peerlist: ");
+				showTextWithFrame("");
+				showTextWithFrame("current peerlist: ");
 				for(Peer onePeer : peerList) {
-					System.out.println(onePeer.toString());
+					showTextWithFrame(onePeer.toString());
 				}
-				System.out.println("########################################################");
+				showTextWithFrame("");
 			}
 		}
 	}
@@ -116,7 +117,9 @@ public class Messager {
 					targetPeers.add(musterPeer);
 				}
 				else {
-					System.out.println("M failed: name not found!");
+					showTextWithFrame("");
+					showTextWithFrame("M failed: name not found!");
+					showTextWithFrame("");
 				}
 			}
 		}
@@ -135,35 +138,46 @@ public class Messager {
 			while(peerItr.hasNext()){
 				Peer next = peerItr.next();
 				if(next.sameAddress(toDelete) && next.sameNanme(toDelete)){
-					System.out.println("removing: "+next.toString());
+					showTextWithFrame("");
+					showTextWithFrame("removing: "+next.toString());
+					showTextWithFrame("");
 					peerItr.remove();
 					readInputCommand.send(peerList, disconnect);
 				}
 			}
-			System.out.println("current peerlist: ");
+			showTextWithFrame("");
+			showTextWithFrame("current peerlist: ");
 			for(Peer onePeer : peerList) {
-				System.out.println(onePeer.toString());
+				showTextWithFrame(onePeer.toString());
 			}
-			System.out.println("########################################################");
+			showTextWithFrame("");
 		}
 	}
 	
 	public void deleteInactivPeers(long curTime) {
+		boolean changed = false;
 		System.out.println("checking inactive peer... ");
 		synchronized (peerList){
 			Iterator<Peer> peerItr = peerList.iterator(); 
 			while(peerItr.hasNext()){
 				Peer next = peerItr.next();
 				if(next.getPokeTime()+60L<=curTime && next.getIp()!=localPeer.getIp()){
-					System.out.println("removing inactive peer: "+next.toString());
+					showTextWithFrame("");
+					showTextWithFrame("removing inactive peer: "+next.toString());
+					showTextWithFrame("");
 					peerItr.remove();
+					changed = true;
 				}
 			}
-			System.out.println("current peerlist: ");
-			for(Peer onePeer : peerList) {
-				System.out.println(onePeer.toString()+" POKING TIME: "+(System.currentTimeMillis()/1000L - onePeer.getPokeTime()));
+			if(changed) {
+				showTextWithFrame("");
+				showTextWithFrame("current peerlist: ");
+				for(Peer onePeer : peerList) {
+					showTextWithFrame(onePeer.toString()+" POKING TIME: "+(System.currentTimeMillis()/1000L - onePeer.getPokeTime()));
+				}
+				showTextWithFrame("");
 			}
-			System.out.println("########################################################");
+			
 		}
 		
 	}
@@ -178,5 +192,28 @@ public class Messager {
 	
 	public List<Peer> getPeerList(){
 		return this.peerList;
+	}
+	
+	private static void showTextWithFrame(String text) {
+		if(text.length()==0) {
+			for(int i=0;i<30;i++) {
+				System.out.print("*");
+			}
+			System.out.println("");	
+		}
+		else if(text.length()<26) {
+			String first = "* "+text;
+			System.out.print(first);
+			for(int i =(30-first.length())-1;i>0;i--) {
+				System.out.print(" ");
+			}
+			System.out.println("*");
+		}
+		else {
+			String first = text.substring(0, 25);
+			String last = text.substring(26, text.length());
+			showTextWithFrame(first);
+			showTextWithFrame(last);
+		}
 	}
 }

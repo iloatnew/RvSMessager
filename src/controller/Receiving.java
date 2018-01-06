@@ -93,7 +93,10 @@ public class Receiving extends Thread {
 					  receivedMessage.length()
 					  );
 		String name = receivedMessages[1];
-		System.out.println("                                "+name + ": " + text);
+		showTextWithFrame("");
+		showTextWithFrame(name + ": ");
+		showTextWithFrame(text);
+		showTextWithFrame("");
 	}
 	
 	/**
@@ -106,4 +109,34 @@ public class Receiving extends Thread {
 		Peer targetPeer = new Peer(name, ip, port);
 		messager.refreshPeerList(targetPeer);
 	}
+	
+	private static void showTextWithFrame(String text) {
+		if(text.length()==0) {
+			for(int i=0;i<30;i++) {
+				System.out.print(" ");
+			}
+			for(int i=0;i<30;i++) {
+				System.out.print("×");
+			}
+			System.out.println("");	
+		}
+		else if(text.length()<26) {
+			for(int i=0;i<30;i++) {
+				System.out.print(" ");
+			}
+			String first = "* "+text;
+			System.out.print(first);
+			for(int i =(30-first.length())-1;i>0;i--) {
+				System.out.print(" ");
+			}
+			System.out.println("*");
+		}
+		else {
+			String first = text.substring(0, 25);
+			String last = text.substring(26, text.length());
+			showTextWithFrame(first);
+			showTextWithFrame(last);
+		}
+	}
+
 }
