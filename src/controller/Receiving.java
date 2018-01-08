@@ -21,6 +21,9 @@ public class Receiving extends Thread {
 		this.messager = messager;
 		this.port = port;
 		terminate = false;
+		showTextWithFrame("");
+		showTextWithFrame("YOU CAN FIND THE RECEIVED MESSAGE HERE");
+		showTextWithFrame("");
 	}
 	
 	public void terminate() {
@@ -112,28 +115,28 @@ public class Receiving extends Thread {
 	
 	private static void showTextWithFrame(String text) {
 		if(text.length()==0) {
-			for(int i=0;i<30;i++) {
+			for(int i=0;i<80;i++) {
 				System.out.print(" ");
 			}
-			for(int i=0;i<30;i++) {
+			for(int i=0;i<40;i++) {
 				System.out.print("×");
 			}
 			System.out.println("");	
 		}
-		else if(text.length()<26) {
-			for(int i=0;i<30;i++) {
+		else if(text.length()<36) {
+			for(int i=0;i<80;i++) {
 				System.out.print(" ");
 			}
 			String first = "* "+text;
 			System.out.print(first);
-			for(int i =(30-first.length())-1;i>0;i--) {
+			for(int i =(40-first.length())-1;i>0;i--) {
 				System.out.print(" ");
 			}
 			System.out.println("*");
 		}
 		else {
-			String first = text.substring(0, 25);
-			String last = text.substring(26, text.length());
+			String first = text.substring(0, 35);
+			String last = text.substring(35, text.length());
 			showTextWithFrame(first);
 			showTextWithFrame(last);
 		}

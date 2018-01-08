@@ -19,6 +19,9 @@ public class Messager {
 	}
 	
 	public void init(String name, int port) {
+		showTextWithFrame("");
+		showTextWithFrame("YOU CAN FIND ALL SYSTEM INFORMATION HERE");
+		showTextWithFrame("");
 		//init receiver
 		//int port = (int) (1000+Math.random()*10000);
 		receiving = new Receiving(port,this);
@@ -43,6 +46,8 @@ public class Messager {
 		showTextWithFrame("localhost information: ");
 		showTextWithFrame(localPeer.toString());
 		showTextWithFrame("");
+
+		System.out.println("Please give commands...Type 'HELP' to see examples");
 	}
 	
 	public Sender getSender() {
@@ -156,7 +161,6 @@ public class Messager {
 	
 	public void deleteInactivPeers(long curTime) {
 		boolean changed = false;
-		System.out.println("checking inactive peer... ");
 		synchronized (peerList){
 			Iterator<Peer> peerItr = peerList.iterator(); 
 			while(peerItr.hasNext()){
@@ -196,22 +200,28 @@ public class Messager {
 	
 	private static void showTextWithFrame(String text) {
 		if(text.length()==0) {
-			for(int i=0;i<30;i++) {
+			for(int i=0;i<40;i++) {
+				System.out.print(" ");
+			}
+			for(int i=0;i<40;i++) {
 				System.out.print("*");
 			}
 			System.out.println("");	
 		}
-		else if(text.length()<26) {
+		else if(text.length()<36) {
+			for(int i=0;i<40;i++) {
+				System.out.print(" ");
+			}
 			String first = "* "+text;
 			System.out.print(first);
-			for(int i =(30-first.length())-1;i>0;i--) {
+			for(int i =(40-first.length())-1;i>0;i--) {
 				System.out.print(" ");
 			}
 			System.out.println("*");
 		}
 		else {
-			String first = text.substring(0, 25);
-			String last = text.substring(26, text.length());
+			String first = text.substring(0, 35);
+			String last = text.substring(35, text.length());
 			showTextWithFrame(first);
 			showTextWithFrame(last);
 		}

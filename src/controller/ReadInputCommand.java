@@ -58,6 +58,23 @@ public class ReadInputCommand extends Thread{
 		case "EXIT":		handelDisconnect();
 							messager.close();
 							break;
+		case "HELP":        showTextWithFrame("");
+							showTextWithFrame("M 'NAME' 'TEXT' : ");
+							showTextWithFrame("--Send 'TEXT' to contact with 'NAME' in the peer list");
+							showTextWithFrame(" ");
+							showTextWithFrame("MX 'IP' 'PORT' 'TEXT' :");
+							showTextWithFrame("--Send 'TEXT' to 'IP' + 'PORT'");
+							showTextWithFrame(" ");
+							showTextWithFrame("CONNECT 'IP' 'PORT' :");
+							showTextWithFrame("--Add contact with 'IP' 'PORT' to peer list");
+							showTextWithFrame(" ");
+							showTextWithFrame("DISCONNECT :");
+							showTextWithFrame("--Remove this peer from the peer lists from all users");
+							showTextWithFrame(" ");
+							showTextWithFrame("EXIT : ");
+							showTextWithFrame("--Disconnect and end the program");
+							showTextWithFrame("");
+							break;
 		default: 			System.out.println("unavailable");
 							break;
 		}
@@ -146,6 +163,29 @@ public class ReadInputCommand extends Thread{
 		for(Peer targetPeer : targetPeers) {
 			messager.getSender().sendMessage(targetPeer,something);
 			//System.out.println(" to "+targetPeer.toString());
+		}
+	}
+	
+	private static void showTextWithFrame(String text) {
+		if(text.length()==0) {
+			for(int i=0;i<40;i++) {
+				System.out.print("*");
+			}
+			System.out.println("");	
+		}
+		else if(text.length()<36) {
+			String first = "* "+text;
+			System.out.print(first);
+			for(int i =(40-first.length())-1;i>0;i--) {
+				System.out.print(" ");
+			}
+			System.out.println("*");
+		}
+		else {
+			String first = text.substring(0, 35);
+			String last = text.substring(35, text.length());
+			showTextWithFrame(first);
+			showTextWithFrame(last);
 		}
 	}
 }

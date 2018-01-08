@@ -26,6 +26,7 @@ public class AutoPoking extends Thread{
 		long curTime = System.currentTimeMillis() / 1000L;
 		while(!terminate) {
 			if(System.currentTimeMillis() / 1000L == (curTime + 30L)) {
+				System.out.println("Please give commands...Type 'HELP' to see examples");
 				curTime = System.currentTimeMillis() / 1000L;
 				messager.deleteInactivPeers(curTime);
 				sendPokeToEveryone();
