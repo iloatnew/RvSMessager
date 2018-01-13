@@ -73,17 +73,16 @@ public class Receiving extends Thread {
 
 	/**
 	 * handle the user messages with type DISCONNECT
-	 * when the peer in the list, remove the peer in the DISCONNECT message from the peer list
+	 * when the disconnect message is about the peer itself, will be ignored
+	 * otherwise when the peer in the list, remove the peer in the DISCONNECT message from the peer list
 	 * and send the same DISCONNECT message to all other peers in peer list
 	 */
 	private void handleDisconnect() {
 		String name = receivedMessages[1];
 		String ip = receivedMessages[2];
 		int port = Integer.parseInt(receivedMessages[3]);
-		
 		Peer toDelete = new Peer(name,ip,port);
-		messager.deletePeer(toDelete, receivedMessage);
-		
+		messager.deletePeer(toDelete);
 	}
 
 	/**

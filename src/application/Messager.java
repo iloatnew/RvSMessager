@@ -132,30 +132,42 @@ public class Messager {
 	}
 	
 	/**
-	 * delete the peer toDelete when it is found in the peer list
+	 * when toDelete is localpeer, then it means local peer wants to disconnect
+	 * all the peers in the list will be deleted
+	 * otherwise delete the peer toDelete when it is found in the peer list
 	 * otherwise do nothing
 	 * @param toDelete = the peer to delete
-	 * @param disconnect = the DISCONNECT message, can be passed to other peers in the peer list
 	 */
-	public void deletePeer(Peer toDelete, String disconnect) {
+	public void deletePeer(Peer toDelete) {
 		synchronized (peerList){
+			boolean changed = false;
 			Iterator<Peer> peerItr = peerList.iterator(); 
 			while(peerItr.hasNext()){
-				Peer next = peerItr.next();
-				if(next.sameAddress(toDelete) && next.sameNanme(toDelete)){
-					showTextWithFrame("");
-					showTextWithFrame("removing: "+next.toString());
-					showTextWithFrame("");
+				Peer nextPeer = peerItr.next();
+				// it removes all peers, when it received Disconnect itself message
+				if(toDelete.samePeer(localPeer)) {
 					peerItr.remove();
-					readInputCommand.send(peerList, disconnect);
+					changed = true;
+				}
+				else {
+					//System.out.println("compairing "+ nextPeer.toString()+" "+toDelete.toString());
+					if(nextPeer.samePeer(toDelete)){
+						changed = true;
+						showTextWithFrame("");
+						showTextWithFrame("removing: "+nextPeer.toString());
+						showTextWithFrame("");
+						peerItr.remove();
+					}
 				}
 			}
-			showTextWithFrame("");
-			showTextWithFrame("current peerlist: ");
-			for(Peer onePeer : peerList) {
-				showTextWithFrame(onePeer.toString());
+			if(changed) {
+				showTextWithFrame("");
+				showTextWithFrame("current peerlist: ");
+				for(Peer onePeer : peerList) {
+					showTextWithFrame(onePeer.toString());
+				}
+				showTextWithFrame("");
 			}
-			showTextWithFrame("");
 		}
 	}
 	
@@ -165,7 +177,7 @@ public class Messager {
 			Iterator<Peer> peerItr = peerList.iterator(); 
 			while(peerItr.hasNext()){
 				Peer next = peerItr.next();
-				if(next.getPokeTime()+60L<=curTime && next.getIp()!=localPeer.getIp()){
+				if(next.getPokeTime()+60L<=curTime && !next.samePeer(localPeer)){
 					showTextWithFrame("");
 					showTextWithFrame("removing inactive peer: "+next.toString());
 					showTextWithFrame("");
@@ -181,7 +193,6 @@ public class Messager {
 				}
 				showTextWithFrame("");
 			}
-			
 		}
 		
 	}
@@ -195,7 +206,9 @@ public class Messager {
 	}
 	
 	public List<Peer> getPeerList(){
-		return this.peerList;
+		synchronized (peerList){
+			return this.peerList;
+		}
 	}
 	
 	private static void showTextWithFrame(String text) {

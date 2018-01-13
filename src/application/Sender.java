@@ -5,14 +5,12 @@ import model.*;
 public class Sender {
 
 	private AutoPoking autoPoking;
-	
 	/**
 	 * Sender deals all type of sending jobs, includes normal send,
 	 * disconnect, connect, poking and so on.
 	 */
 	public Sender(Messager messager) {
 		autoPoking = new AutoPoking(messager);
-		autoPoking.setPeerList(messager.getPeerList());
 		autoPoking.start();
 	}
  

@@ -86,9 +86,10 @@ public class ReadInputCommand extends Thread{
 	 * it create and send "DISCONNECT" message to all peers in the peerlist
 	 */
 	private void handelDisconnect() {
-		messager.getSender().stopPoking();
-		String message = creatDCMessage();
-		send(messager.getPeerList(), message);
+		send(messager.getPeerList(), creatDCMessage());
+		// let deletePeer() in messager send the DISCONNECT message. here will the message not be send
+		messager.deletePeer(messager.getLocalPeer());
+		
 	}
 
 
@@ -159,10 +160,10 @@ public class ReadInputCommand extends Thread{
 	 * @param something = the message
 	 */
 	public void send(List<Peer> targetPeers, String something){
-		//System.out.println("sending "+something);
+//		System.out.println("sending "+something);
 		for(Peer targetPeer : targetPeers) {
 			messager.getSender().sendMessage(targetPeer,something);
-			//System.out.println(" to "+targetPeer.toString());
+//			System.out.println(" to "+targetPeer.toString());
 		}
 	}
 	
